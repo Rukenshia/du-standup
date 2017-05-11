@@ -1,7 +1,11 @@
 .presentation-toggle {
-    position: absolute;
-    right: 8px;
-    top: 8px;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+}
+
+.link-black {
+  color: black;
 }
 
 .button-small {
@@ -12,10 +16,10 @@
 }
 
 .button-black {
-    background-color: black;
-    border-color: black;
-    color: white;
+  background-color: black;
+  border-color: black;
+  color: white;
 }
 .button-black.button-clear {
-    color: black;
+  color: black;
 }
