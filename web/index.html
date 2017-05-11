@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <div id="app">
+            <div v-for="category in categories">
+                <h1>{{ category.name}}</h1>
+                <ul>
+                    <li v-for="entry in category.entries">{{ entry.Title }} (+{{entry.Votes}} <button @click="voteEntry(entry)">+</button>) <button @click="deleteEntry(entry)">x</button></li>
+                    <li><input type="text" v-model="category.input" /> <button @click="addEntry(category.name, category.input)">Add</button></li>
+                </ul>
+            </div>
+        </div>
+        <script src="js/ajax.js"></script>
+        <script src="https://unpkg.com/vue"></script>
+        <script src="js/app.js"></script>
+    </body>
+</html>

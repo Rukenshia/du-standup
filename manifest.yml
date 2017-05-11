@@ -1,0 +1,6 @@
+---
+applications:
+  - name: du-standup
+    env:
+      GOVERSION: go1.8
+      GOPACKAGENAME: github.com/Rukenshia/du-standup
