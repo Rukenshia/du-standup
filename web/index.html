@@ -7,10 +7,19 @@
     <body>
         <div id="app" class="container">
             <div class="presentation-toggle">
-                <button class="button button-clear button-black" @click="togglePresentationMode()">toggle presentation mode</button>
+                <button class="button button-clear button-black button-small" @click="togglePresentationMode()">toggle presentation mode</button>
             </div>
 
-            <div class="row">
+            <div class="row" v-if="presentationMode">
+                |&nbsp;<div v-for="category in categories">
+                    <a href="#" @click="viewCategory(category)">{{ category.name }}</a> |
+                </div>
+            </div>
+            <div class="row" v-if="presentationMode && selectedCategory">
+                <category :name="selectedCategory.name" :entries="selectedCategory.entries" :allow-updates="false"></category>
+            </div>
+
+            <div class="row" v-if="!presentationMode">
                 <div class="column column-50">
                     <div v-for="category in categories">
                         <category :name="category.name" :entries="category.entries" :allow-updates="!presentationMode"></category>

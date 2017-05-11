@@ -2,7 +2,8 @@ var app = new Vue({
   el: '#app',
   store: window.store,
   data: {
-    presentationMode: false,
+    presentationMode: true,
+    selectedCategory: null,
   },
   mounted() {
     this.getStandup();
@@ -26,6 +27,9 @@ var app = new Vue({
           });
         });
     },
+    viewCategory(c) {
+      this.selectedCategory = c;
+    }
   },
 });
 
