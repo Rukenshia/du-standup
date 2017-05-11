@@ -16,6 +16,8 @@ window.store = new Vuex.Store({
           } else {
             c.entries.push(entry);
           }
+
+          c.entries.sort((a, b) => b.Votes - a.Votes);
         }
       });
     },

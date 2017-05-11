@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="css/app.css" />
         <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+        <link rel="stylesheet" href="css/app.css" />
     </head>
     <body>
-        <div id="app">
+        <div id="app" class="container">
             <div class="presentation-toggle">
-                {{ presentationMode}}
-                <button class="button button-clear" @click="togglePresentationMode()">toggle presentation mode</button>
+                <button class="button button-clear button-black" @click="togglePresentationMode()">toggle presentation mode</button>
             </div>
-            <div v-for="category in categories">
-                <category :name="category.name" :entries="category.entries" :allow-updates="!presentationMode"></category>
+
+            <div class="row">
+                <div class="column column-50">
+                    <div v-for="category in categories">
+                        <category :name="category.name" :entries="category.entries" :allow-updates="!presentationMode"></category>
+                    </div>
+                </div>
             </div>
         </div>
         <script src="js/ajax.js"></script>

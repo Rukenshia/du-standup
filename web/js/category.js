@@ -9,9 +9,21 @@ Vue.component('category', {
   <div class="category">
     <h1>{{ name }}</h1>
     <ul>
-        <li v-for="entry in entries">{{ entry.Title }} (+{{entry.Votes}} <button @click="voteEntry(entry)">+</button>) <button @click="deleteEntry(entry)">x</button></li>
-        <li v-if="allowUpdates"><input type="text" v-model="input" /> <button @click="addEntry()">Add</button></li>
+        <li v-for="entry in entries">{{ entry.Title }}
+          (+{{entry.Votes}}
+          <button class="button-small button-black" v-if="allowUpdates" @click="voteEntry(entry)">+</button>)
+          <button class="button-small button-black" v-if="allowUpdates" @click="deleteEntry(entry)">x</button>
+        </li>
     </ul>
+
+    <div class="row" v-if="allowUpdates">
+      <div class="column column-40">
+        <input type="text" v-model="input" />
+      </div>
+      <div class="column">
+        <button class="button-black" @click="addEntry()">Add</button>
+      </div>
+    </div>
   </div>`,
 
   methods: {
