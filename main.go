@@ -14,11 +14,14 @@ func main() {
 	standup = NewStandup()
 
 	router := httprouter.New()
-	router.GET("/api/entries", apiGetEntries)
-	router.POST("/api/entries", apiCreateEntry)
-	router.DELETE("/api/entries/:id", apiDeleteEntry)
-	router.PUT("/api/entries/:id", apiUpdateEntry)
 	router.GET("/api/standup", apiGetStandup)
+	router.GET("/api/categories", apiGetCategories)
+	router.GET("/api/categories/:category", apiGetCategory)
+	router.GET("/api/categories/:category/entries", apiGetEntries)
+	router.POST("/api/categories/:category/entries", apiCreateEntry)
+	router.DELETE("/api/categories/:category/entries/:id", apiDeleteEntry)
+	router.GET("/api/categories/:category/entries/:id", apiGetEntry)
+	router.PUT("/api/categories/:category/entries/:id", apiUpdateEntry)
 
 	router.ServeFiles("/web/*filepath", http.Dir("web"))
 

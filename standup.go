@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/julienschmidt/httprouter"
@@ -12,9 +13,9 @@ import (
 // Standup is the current Standup Meeting
 // It is denoted with an Expiry date
 type Standup struct {
-	idCounter int
-	Expires   time.Time
-	Entries   Entries
+	idCounter  int
+	Expires    time.Time
+	Categories Categories
 }
 
 func getNextDaily() time.Time {
@@ -47,23 +48,8 @@ func NewStandup() Standup {
 	return Standup{
 		0,
 		getNextDaily(),
-		make(Entries, 0),
+		Categories{NewCategory(0, "needs")},
 	}
-}
-
-// NewEntry creates a new Entry for this Standup
-func (s *Standup) NewEntry(category, title string) Entry {
-	s.idCounter++
-
-	entry := Entry{
-		s.idCounter,
-		category,
-		title,
-		0,
-	}
-
-	s.Entries = append(s.Entries, entry)
-	return entry
 }
 
 // ToJSON marshals the Standup into a JSON string
@@ -71,6 +57,16 @@ func (s *Standup) ToJSON() []byte {
 	res, _ := json.Marshal(s)
 
 	return res
+}
+
+// GetCategoryByID gets a Category by its id
+func (s *Standup) GetCategoryByID(id int) *Category {
+	for _, c := range s.Categories {
+		if c.ID == id {
+			return &c
+		}
+	}
+	return nil
 }
 
 // StandupMiddleware to automatically regenerate the next Standup
@@ -89,4 +85,24 @@ func StandupMiddleware(handler http.Handler) http.Handler {
 
 func apiGetStandup(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	w.Write(standup.ToJSON())
+}
+
+func apiGetCategories(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	w.Write(standup.Categories.ToJSON())
+}
+
+func apiGetCategory(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	id, err := strconv.Atoi(p.ByName("category"))
+	if err != nil {
+		w.WriteHeader(400)
+		return
+	}
+
+	c := standup.GetCategoryByID(id)
+	if c == nil {
+		w.WriteHeader(404)
+		return
+	}
+
+	w.Write(c.ToJSON())
 }
