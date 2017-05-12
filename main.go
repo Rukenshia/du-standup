@@ -19,9 +19,10 @@ func main() {
 	router.GET("/api/categories/:category", apiGetCategory)
 	router.GET("/api/categories/:category/entries", apiGetEntries)
 	router.POST("/api/categories/:category/entries", apiCreateEntry)
-	router.DELETE("/api/categories/:category/entries/:id", apiDeleteEntry)
-	router.GET("/api/categories/:category/entries/:id", apiGetEntry)
-	router.PUT("/api/categories/:category/entries/:id", apiUpdateEntry)
+	router.DELETE("/api/categories/:category/entries/:entry", apiDeleteEntry)
+	router.GET("/api/categories/:category/entries/:entry", apiGetEntry)
+	router.PUT("/api/categories/:category/entries/:entry", apiUpdateEntry)
+	router.POST("/api/categories/:category/entries/:entry/vote", apiVoteEntry)
 
 	router.ServeFiles("/web/*filepath", http.Dir("web"))
 

@@ -12,7 +12,7 @@
 
             <div class="row" v-if="presentationMode">
                 |&nbsp;<div v-for="category in categories">
-                    <a class="link-black" href="#" @click="viewCategory(category)">{{ category.name }}</a> |
+                    <a class="link-black" href="#" @click="viewCategory(category)">{{ category.Name }}</a> |
                 </div>
             </div>
             <div class="row" v-if="presentationMode && selectedCategory">
@@ -22,7 +22,7 @@
             <div class="row" v-if="!presentationMode">
                 <div class="column column-50">
                     <div v-for="category in categories">
-                        <category :name="category.name" :entries="category.entries" :allow-updates="!presentationMode"></category>
+                        <category :id="category.ID" :name="category.Name" :entries="category.Entries" :allow-updates="!presentationMode"></category>
                     </div>
                 </div>
             </div>
