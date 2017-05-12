@@ -10,7 +10,7 @@ import (
 )
 
 // Categories is an array of Category
-type Categories []Category
+type Categories []*Category
 
 // Category represents a Category with Entries
 type Category struct {
@@ -21,8 +21,8 @@ type Category struct {
 }
 
 // NewCategory creates a new Category
-func NewCategory(id int, name string) Category {
-	return Category{
+func NewCategory(id int, name string) *Category {
+	return &Category{
 		0,
 		id,
 		name,
@@ -45,7 +45,7 @@ func (c *Category) ToJSON() []byte {
 }
 
 // NewEntry creates a new Entry inside the Category
-func (c *Category) NewEntry(title string) Entry {
+func (c *Category) NewEntry(title string) *Entry {
 	id := c.idCounter
 	c.idCounter++
 
@@ -60,7 +60,7 @@ func (c *Category) NewEntry(title string) Entry {
 func (c *Category) GetEntryByID(id int) *Entry {
 	for _, e := range c.Entries {
 		if e.ID == id {
-			return &e
+			return e
 		}
 	}
 	return nil
@@ -117,7 +117,7 @@ func apiCreateEntry(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 		return
 	}
 
-	var entry Entry
+	var entry *Entry
 
 	if err := getJSON(r, &entry); err != nil {
 		w.WriteHeader(400)
@@ -190,6 +190,38 @@ func apiUpdateEntry(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 
 	e.Title = entry.Title
 	e.Votes = entry.Votes
+
+	w.Write(e.ToJSON())
+}
+
+func apiVoteEntry(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	id, err := strconv.Atoi(p.ByName("category"))
+	if err != nil {
+		w.WriteHeader(400)
+		return
+	}
+
+	c := standup.GetCategoryByID(id)
+	if c == nil {
+		w.WriteHeader(404)
+		w.Write([]byte("Category not found"))
+		return
+	}
+
+	eID, err := strconv.Atoi(p.ByName("entry"))
+	if err != nil {
+		w.WriteHeader(400)
+		return
+	}
+
+	e := c.GetEntryByID(eID)
+
+	if e == nil {
+		w.WriteHeader(404)
+		return
+	}
+
+	e.Votes++
 
 	w.Write(e.ToJSON())
 }

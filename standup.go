@@ -63,7 +63,7 @@ func (s *Standup) ToJSON() []byte {
 func (s *Standup) GetCategoryByID(id int) *Category {
 	for _, c := range s.Categories {
 		if c.ID == id {
-			return &c
+			return c
 		}
 	}
 	return nil

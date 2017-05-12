@@ -1,5 +1,5 @@
 Vue.component('category', {
-  props: ['name', 'entries', 'allowUpdates'],
+  props: ['id', 'name', 'entries', 'allowUpdates'],
   data() {
     return {
       input: '',
@@ -27,32 +27,36 @@ Vue.component('category', {
   </div>`,
 
   methods: {
+    generateUrl(endpoint, entryId = null) {
+      return `${window.baseURL}/api/categories/${this.id}/${endpoint}${entryId !== null ? '/' + entryId : ''}`;
+    },
     addEntry() {
-      http.post(`${window.baseURL}/api/entries`, JSON.stringify({
+      http.post(this.generateUrl('entries'), JSON.stringify({
         Category: this.name,
         Title: this.input,
       })).then(body => {
-        this.$store.commit('add_entry', JSON.parse(body));
+        this.$store.commit('add_entry', { categoryId: this.id, entry: JSON.parse(body) });
       });
     },
     voteEntry(entry) {
-      if (localStorage.getItem(`${getDate()}_${entry.ID}`, 'voted')) {
+      if (localStorage.getItem(`${getDate()}_${entry.ID}_${this.Name}_${entry.Title}`, 'voted')) {
         return;
       }
 
-      localStorage.setItem(`${getDate()}_${entry.ID}`, 'voted');
-      http.put(`${window.baseURL}/api/entries/${entry.ID}`, JSON.stringify({
+      localStorage.setItem(`${getDate()}_${entry.ID}_${this.Name}_${entry.Title}`, 'voted');
+      http.post(`${this.generateUrl('entries', entry.ID)}/vote`, JSON.stringify({
         Category: entry.Category,
         Title: entry.Title,
         Votes: entry.Votes + 1,
       })).then(body => {
-        this.$store.commit('add_entry', JSON.parse(body));
+        const entry = JSON.parse(body);
+        this.$store.commit('add_entry', { categoryId: this.id, entry });
       });
     },
     deleteEntry(entry) {
-      http.del(`${window.baseURL}/api/entries/${entry.ID}`)
+      http.del(this.generateUrl('entries', entry.ID))
         .then(body => {
-          this.$store.commit('delete_entry', entry);
+          this.$store.commit('delete_entry', { categoryId: this.id, entry });
         });
     },
   }

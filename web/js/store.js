@@ -1,32 +1,42 @@
 window.store = new Vuex.Store({
   state: {
-    categories: [{
-      name: 'needs',
-      entries: [],
-      input: '',
-    }],
+    standup: {},
   },
   mutations: {
-    add_entry(state, entry) {
-      state.categories.forEach(c => {
-        if (c.name === entry.Category) {
-          const existing = c.entries.find(ee => ee.ID === entry.ID);
-          if (existing) {
-            Object.assign(existing, entry);
-          } else {
-            c.entries.push(entry);
-          }
-
-          c.entries.sort((a, b) => b.Votes - a.Votes);
-        }
-      });
+    set_standup(state, standup) {
+      state.standup = standup;
     },
-    delete_entry(state, entry) {
-      const cat = state.categories.find(c => entry.Category === c.name);
-
-      if (cat) {
-        cat.entries = cat.entries.filter(e => e.ID !== entry.ID);
+    add_category(state, category) {
+      if (state.standup.Categories.find(c => c.ID === category.ID)) {
+        throw new Error('Category with this ID exists');
       }
+
+      state.standup.Categories.push(category);
+    },
+    add_entry(state, { categoryId, entry }) {
+      const category = state.standup.Categories.find(c => c.ID === categoryId);
+      if (!category) {
+        console.warn('invalid category, skipping');
+        return;
+      }
+
+      const existing = category.Entries.find(ee => ee.ID === entry.ID);
+      if (existing) {
+        Object.assign(existing, entry);
+      } else {
+        category.Entries.push(entry);
+      }
+
+      category.Entries.sort((a, b) => b.Votes - a.Votes);
+    },
+    delete_entry(state, { categoryId, entry }) {
+      const category = state.standup.Categories.find(c => c.ID === categoryId);
+      if (!category) {
+        console.warn('invalid category, skipping');
+        return;
+      }
+
+      category.Entries = category.Entries.filter(e => e.ID !== entry.ID);
     }
   }
 })

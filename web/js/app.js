@@ -9,8 +9,11 @@ var app = new Vue({
     this.getStandup();
   },
   computed: {
+    standup() {
+      return this.$store.state.standup;
+    },
     categories() {
-      return this.$store.state.categories;
+      return this.$store.state.standup.Categories;
     }
   },
   methods: {
@@ -21,10 +24,8 @@ var app = new Vue({
       http.get(`${window.baseURL}/api/standup`)
         .then(body => {
           body = JSON.parse(body);
-          body.Entries.forEach(e => {
-            console.log(e);
-            this.$store.commit('add_entry', e);
-          });
+          console.log(body);
+          this.$store.commit('set_standup', body);
         });
     },
     viewCategory(c) {
