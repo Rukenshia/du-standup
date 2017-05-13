@@ -45,6 +45,14 @@ const responseHandlers = {
       cat = cat.slice(0, cat.length - 1);
     }
 
+    if (response.status_code === 302) {
+      return {
+        content: {
+          text: `${cat} \`${request.__meta.title}\` already exists, so I voted it further up for you :blush:`,
+        }
+      };
+    }
+
     return {
       content: {
         text: `alright, I added ${cat} \`${request.__meta.title}\` to the next standup :blush:`,
