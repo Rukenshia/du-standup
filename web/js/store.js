@@ -20,6 +20,10 @@ window.store = new Vuex.Store({
         return;
       }
 
+      if (entry.Start) {
+        entry.Start = new Date(entry.Start);
+      }
+
       const existing = category.Entries.find(ee => ee.ID === entry.ID);
       if (existing) {
         Object.assign(existing, entry);

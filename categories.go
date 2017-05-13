@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -17,16 +18,18 @@ type Categories []*Category
 type Category struct {
 	idCounter int
 	ID        int
+	Type      string
 	Name      string
 	Entries   Entries
 }
 
 // NewCategory creates a new Category
-func NewCategory(id int, name string) *Category {
+func NewCategory(id int, categoryType, name string) *Category {
 	return &Category{
 		0,
 		id,
 		name,
+		categoryType,
 		make(Entries, 0),
 	}
 }
@@ -45,12 +48,24 @@ func (c *Category) ToJSON() []byte {
 	return res
 }
 
-// NewEntry creates a new Entry inside the Category
-func (c *Category) NewEntry(title string) *Entry {
+// NewListEntry creates a new ListEntry inside the Category
+func (c *Category) NewListEntry(title string) Entry {
 	id := c.idCounter
 	c.idCounter++
 
-	e := NewEntry(id, title)
+	var e Entry = NewListEntry(id, title)
+
+	c.Entries = append(c.Entries, e)
+
+	return e
+}
+
+// NewEventEntry creates a new EventEntry inside the Category
+func (c *Category) NewEventEntry(title, where string, start time.Time) Entry {
+	id := c.idCounter
+	c.idCounter++
+
+	var e Entry = NewEventEntry(id, title, start, where)
 
 	c.Entries = append(c.Entries, e)
 
@@ -58,19 +73,19 @@ func (c *Category) NewEntry(title string) *Entry {
 }
 
 // GetEntryByID returns the Entry by its ID
-func (c *Category) GetEntryByID(id int) *Entry {
+func (c *Category) GetEntryByID(id int) Entry {
 	for _, e := range c.Entries {
-		if e.ID == id {
+		if e.GetID() == id {
 			return e
 		}
 	}
 	return nil
 }
 
-// GetEntryByID returns the Entry by its Title
-func (c *Category) GetEntryByTitle(title string) *Entry {
+// GetEntryByTitle returns the Entry by its Title
+func (c *Category) GetEntryByTitle(title string) Entry {
 	for _, e := range c.Entries {
-		if e.Title == title {
+		if e.GetTitle() == title {
 			return e
 		}
 	}
@@ -82,7 +97,7 @@ func (c *Category) RemoveEntryByID(id int) error {
 	pos := -1
 
 	for idx, e := range c.Entries {
-		if e.ID == id {
+		if e.GetID() == id {
 			pos = idx
 			break
 		}
@@ -138,32 +153,57 @@ func apiCreateEntry(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 		return
 	}
 
-	var entry *Entry
+	var entry Entry
+	if c.Type == "list" {
+		var le *ListEntry
+		if err := getJSON(r, &le); err != nil {
+			w.WriteHeader(400)
+			return
+		}
 
-	if err := getJSON(r, &entry); err != nil {
-		w.WriteHeader(400)
+		entry = le
+	} else if c.Type == "events" {
+		var ee *EventEntry
+		if err := getJSON(r, &ee); err != nil {
+			w.WriteHeader(400)
+			return
+		}
+
+		entry = ee
+	}
+
+	if entry == nil {
+		w.WriteHeader(500)
 		return
 	}
 
-	if len(strings.TrimSpace(entry.Title)) == 0 {
+	if len(strings.TrimSpace(entry.GetTitle())) == 0 {
 		w.WriteHeader(400)
 		w.Write([]byte("Title cannot be empty"))
 		return
 	}
 
-	existing := c.GetEntryByTitle(entry.Title)
+	existing := c.GetEntryByTitle(entry.GetTitle())
 
 	if existing != nil {
 		w.WriteHeader(302)
-		existing.Votes++
+		existing.AddVote()
 
 		w.Write(existing.ToJSON())
 		return
 	}
 
-	entry = c.NewEntry(entry.Title)
+	if c.Type == "list" {
+		w.Write(c.NewListEntry(entry.GetTitle()).ToJSON())
+	} else if c.Type == "events" {
+		ee, ok := entry.(*EventEntry)
+		if !ok {
+			w.WriteHeader(500)
+			return
+		}
 
-	w.Write(entry.ToJSON())
+		w.Write(c.NewEventEntry(ee.Title, ee.Where, ee.Start).ToJSON())
+	}
 }
 
 func apiGetEntry(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -225,28 +265,45 @@ func apiUpdateEntry(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 	}
 
 	var entry Entry
+	if c.Type == "list" {
+		var le *ListEntry
+		if err := getJSON(r, &le); err != nil {
+			w.WriteHeader(400)
+			return
+		}
 
-	if err := getJSON(r, &entry); err != nil {
-		w.WriteHeader(400)
+		entry = le
+	} else if c.Type == "events" {
+		var ee *EventEntry
+		if err := getJSON(r, &ee); err != nil {
+			w.WriteHeader(400)
+			return
+		}
+
+		entry = ee
+	}
+
+	if entry == nil {
+		w.WriteHeader(500)
 		return
 	}
 
-	if len(strings.TrimSpace(entry.Title)) == 0 {
+	if len(strings.TrimSpace(entry.GetTitle())) == 0 {
 		w.WriteHeader(400)
 		w.Write([]byte("Title cannot be empty"))
 		return
 	}
 
-	if e.Title != entry.Title {
-		if ee := c.GetEntryByTitle(entry.Title); ee != nil {
+	if e.GetTitle() != entry.GetTitle() {
+		if ee := c.GetEntryByTitle(entry.GetTitle()); ee != nil {
 			w.WriteHeader(409)
 			w.Write([]byte("Entry with this Title exists"))
 			return
 		}
 	}
 
-	e.Title = entry.Title
-	e.Votes = entry.Votes
+	e.SetTitle(entry.GetTitle())
+	e.SetVotes(entry.GetVotes())
 
 	w.Write(e.ToJSON())
 }
@@ -280,7 +337,7 @@ func apiVoteEntry(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		return
 	}
 
-	e.Votes++
+	e.AddVote()
 
 	w.Write(e.ToJSON())
 }

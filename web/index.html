@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div class="row" v-if="presentationMode && selectedCategory">
-                    <presentation-category :name="selectedCategory.Name" :entries="selectedCategory.Entries"></presentation-category>
+                    <presentation-category :name="selectedCategory.Name" :type="selectedCategory.Type" :entries="selectedCategory.Entries"></presentation-category>
                 </div>
 
                 <div class="row" v-if="!presentationMode">
@@ -26,7 +26,7 @@
                 <div class="row" v-if="!presentationMode">
                     <div class="column">
                         <div v-for="category in categories">
-                            <category :id="category.ID" :name="category.Name" :entries="category.Entries"></category>
+                            <category :id="category.ID" :type="category.Type" :name="category.Name" :entries="category.Entries"></category>
                         </div>
                     </div>
                 </div>

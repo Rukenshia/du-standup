@@ -4,35 +4,27 @@ import (
 	"encoding/json"
 )
 
-// Entries represent an Array of Entry
-type Entries []*Entry
+// Entries represent an Array of ListEntry
+type Entries []Entry
 
-// Entry consists of a Category and Title for the Standup
-// you can also vote on Entries in the future. Hopefully.
-type Entry struct {
-	ID    int
-	Title string
-	Votes uint32
-}
+// Entry provides an Entry Interface
+type Entry interface {
+	// Have to use Get... here so we can still easily JSON marshal the ID prop
+	// sadly not "Effective Go"
 
-// NewEntry creates a new Entry
-func NewEntry(id int, title string) *Entry {
-	return &Entry{
-		id,
-		title,
-		0,
-	}
+	GetID() int
+	GetTitle() string
+	SetTitle(string)
+
+	GetVotes() uint32
+	SetVotes(uint32)
+	AddVote()
+
+	ToJSON() []byte
 }
 
 // ToJSON marshals the Entries into a JSON string
 func (e *Entries) ToJSON() []byte {
-	res, _ := json.Marshal(e)
-
-	return res
-}
-
-// ToJSON marshals the Entry into a JSON string
-func (e *Entry) ToJSON() []byte {
 	res, _ := json.Marshal(e)
 
 	return res

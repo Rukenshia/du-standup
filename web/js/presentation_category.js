@@ -1,21 +1,45 @@
 Vue.component('presentation-category', {
-  props: ['entries'],
+  props: ['entries', 'type'],
   data() {
     return {
       input: '',
     };
   },
   template: `
-  <div class="category">
-    <div v-if="entries.length === 0" class="category-empty">
-      <p>nothing &#x1F389</p>
+  <div class="column category">
+    <div class="row">
+      <div class="column">
+        <div v-if="entries.length === 0" class="category-empty">
+          <p>nothing &#x1F389</p>
+        </div>
+        <ul class="category-entries">
+            <li v-if="type === 'list'" v-for="entry in entries">
+                {{ entry.Title }}
+            </li>
+        </ul>
+
+        <div v-if="type === 'events'" class="category-entries">
+          <div v-for="event in entries" class="row">
+            <div class="column column-25">
+              <strong>&#x1F55D {{ moment(event.Start).format('HH:mm') }}</strong>&nbsp;
+            </div>
+            <div class="column">
+              {{ event.Title }}
+            </div>
+            <div class="column">
+              <small>{{ event.Wherer }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <ul class="category-entries">
-        <li v-for="entry in entries">
-            {{ entry.Title }}
-        </li>
-    </ul>
 
   </div>`,
+
+  computed: {
+    moment() {
+      return moment;
+    }
+  },
 
 });

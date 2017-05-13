@@ -1,25 +1,39 @@
 Vue.component('category', {
-  props: ['id', 'name', 'entries'],
+  props: ['id', 'type', 'name', 'entries'],
   data() {
     return {
-      input: '',
+      title: '',
+      where: '',
+      start: '',
     };
   },
   template: `
   <div class="category">
     <h1>{{ name }}</h1>
 
-    <ul>
+    <ul v-if="type === 'list'">
         <li v-for="entry in entries">{{ entry.Title }}
           (+{{entry.Votes}}
           <button class="button-small button-black" @click="voteEntry(entry)">+</button>)
           <button class="button-small button-black" @click="deleteEntry(entry)">x</button>
         </li>
     </ul>
+    <div v-if="type === 'events'">
+      <div v-for="event in entries">
+        {{ event.Title }} starting at {{ event.Start }} in {{ event.Where }}
+          <button class="button-small button-black" @click="voteEntry(event)">vote</button>
+          <button class="button-small button-black" @click="deleteEntry(event)">x</button>
+      </div>
+    </div>
 
     <div class="row">
       <div class="column column-40">
-        <input type="text" v-model="input" />
+        <input type="text" placeholder="Title" v-model="title" />
+
+        <div v-if="type === 'events'">
+          Starting Time <input type="time" placeholder="Start Time" v-model="start" />
+          <input type="text" placeholder="Where?" v-model="where" />
+        </div>
       </div>
       <div class="column">
         <button class="button-black" @click="addEntry()">Add</button>
@@ -32,14 +46,31 @@ Vue.component('category', {
       return `${window.baseURL}/api/categories/${this.id}/${endpoint}${entryId !== null ? '/' + entryId : ''}`;
     },
     addEntry() {
-      if (this.input.length === 0) {
+      if (this.title.length === 0) {
         return;
       }
 
-      http.post(this.generateUrl('entries'), JSON.stringify({
-        Category: this.name,
-        Title: this.input,
-      })).then(body => {
+      const postBody = {
+        Title: this.title,
+      };
+
+      if (this.type === 'events') {
+        if (this.start.length === 0 || this.where.length === 0) {
+          return;
+        }
+
+        // set start time
+        const timeSplit = this.start.split(':').map(x => parseInt(x, 10));
+        const start = moment(this.$store.state.standup.Expires).hours(timeSplit[0]).minutes(timeSplit[1]).toDate();
+
+
+        if (this.type === 'events') {
+          postBody.Start = start;
+          postBody.Where = this.where;
+        }
+      }
+
+      http.post(this.generateUrl('entries'), JSON.stringify(postBody)).then(body => {
         this.$store.commit('add_entry', { categoryId: this.id, entry: JSON.parse(body) });
       });
     },
