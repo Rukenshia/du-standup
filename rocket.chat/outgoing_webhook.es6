@@ -1,7 +1,9 @@
 /* exported Script */
 /* globals console, _, s, HTTP */
 
-const service_url = '***REMOVED***';
+const base_url = '';
+
+const service_url = `${base_url}/api`;
 
 const reMsg = /@standup ((add|remove) )?(.*?) (.*)/i;
 
@@ -27,7 +29,7 @@ const responseHandlers = {
     if (response.status_code === 400) {
       return {
         content: {
-          text: 'this is a little embarrassing, something went wrong. please use the [web ui](***REMOVED***) :sweat_smile:',
+          text: `this is a little embarrassing, something went wrong. please use the [web ui](${base_ur}/web) :sweat_smile:`,
           parseLinks: true,
         }
       }
