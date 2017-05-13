@@ -6,6 +6,7 @@ const base_url = '';
 const service_url = `${base_url}/api`;
 
 const reMsg = /@standup ((add|remove) )?(.*?) (.*)/i;
+const reEvent = /(.*?) at ([0-9]{1,2}:[0-9]{1,2}) in (.*)/i;
 
 const requestHandlers = {
   add(data) {
@@ -14,6 +15,8 @@ const requestHandlers = {
       url: `${service_url}/categories/${data.category}/entries`,
       data: {
         Title: data.title,
+        Where: data.where,
+        Start: data.start,
       },
 
       __meta: data,
@@ -108,6 +111,27 @@ class Script {
 
     if (!data.category.endsWith('s')) {
       data.category = `${data.category}s`;
+    }
+
+    if (data.category === 'events') {
+      const eventMatch = data.title.match(reEvent);
+      if (!eventMatch) {
+        return {
+          message: {
+            text: `sorry, I didn't quite get that. For events, use this format: \`eventName at 12:34 in room name\``,
+          },
+        };
+      }
+
+      data.title = eventMatch[1];
+
+      const date = new Date();
+      const parts = eventMatch[2].split(':').map(x => parseInt(x, 10));
+      date.setHours(parts[0])
+      date.setMinutes(parts[1]);
+
+      data.start = date;
+      data.where = eventMatch[3];
     }
 
     return requestHandlers[data.event](data);
