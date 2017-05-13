@@ -21,7 +21,7 @@ Vue.component('presentation-category', {
         <div v-if="type === 'events'" class="category-entries">
           <div v-for="event in entries" class="row">
             <div class="column column-25">
-              <strong>&#x1F55D {{ moment(event.Start).format('HH:mm') }}</strong>&nbsp;
+              <strong>{{ moment(event.Start).format('HH:mm') }}</strong>&nbsp;
             </div>
             <div class="column">
               {{ event.Title }}
