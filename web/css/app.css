@@ -28,7 +28,7 @@
 
 .category-empty p {
   position: absolute;
-  margin-top: 20%;
+  margin-top: 10%;
 
   left: 50%;
   transform: translateX(-50%);
