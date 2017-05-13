@@ -207,17 +207,19 @@ func apiUpdateEntry(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 }
 
 func apiVoteEntry(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	var c *Category
 	id, err := strconv.Atoi(p.ByName("category"))
-	if err != nil {
-		w.WriteHeader(400)
-		return
-	}
+	if err == nil {
+		c = standup.GetCategoryByID(id)
 
-	c := standup.GetCategoryByID(id)
-	if c == nil {
-		w.WriteHeader(404)
-		w.Write([]byte("Category not found"))
-		return
+		// maybe the category name is a number
+		if c == nil {
+			c = standup.GetCategoryByName(p.ByName("category"))
+
+		}
+	} else {
+		// try to find it by name
+		c = standup.GetCategoryByName(p.ByName("category"))
 	}
 
 	eID, err := strconv.Atoi(p.ByName("entry"))
