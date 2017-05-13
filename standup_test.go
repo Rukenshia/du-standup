@@ -28,3 +28,25 @@ func TestGetNextDailyOnLateMonday(t *testing.T) {
 	assert.Equal(t, 8, next.Hour())
 	assert.Equal(t, 10, next.Minute())
 }
+
+// TestGetNextDailyOnTuesday checks that at 7am UTC, the next daily is still on the same day
+func TestGetNextDailyOnTuesday(t *testing.T) {
+	now := time.Date(2017, 01, 03, 07, 00, 00, 00, time.UTC)
+
+	next := getNextDaily(now)
+
+	assert.Equal(t, 3, next.Day())
+	assert.Equal(t, 8, next.Hour())
+	assert.Equal(t, 10, next.Minute())
+}
+
+// TestGetNextDailyOnLateTuesday checks that at 2pm UTC, the next daily is on the next day
+func TestGetNextDailyOnLateTuesday(t *testing.T) {
+	now := time.Date(2017, 01, 03, 14, 00, 00, 00, time.UTC)
+
+	next := getNextDaily(now)
+
+	assert.Equal(t, 4, next.Day())
+	assert.Equal(t, 8, next.Hour())
+	assert.Equal(t, 10, next.Minute())
+}
