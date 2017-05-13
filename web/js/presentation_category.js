@@ -27,7 +27,7 @@ Vue.component('presentation-category', {
               {{ event.Title }}
             </div>
             <div class="column">
-              <small>{{ event.Wherer }}</small>
+              <small>{{ event.Where }}</small>
             </div>
           </div>
         </div>

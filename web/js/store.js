@@ -5,6 +5,14 @@ window.store = new Vuex.Store({
   mutations: {
     set_standup(state, standup) {
       state.standup = standup;
+
+      standup.Categories.forEach(category => {
+        if (category.Type === 'list') {
+          category.Entries.sort((a, b) => b.Votes - a.Votes);
+        } else if (category.Type === 'events') {
+          category.Entries.sort((a, b) => moment(a.Start).diff(b.Start));
+        }
+      });
     },
     add_category(state, category) {
       if (state.standup.Categories.find(c => c.ID === category.ID)) {
@@ -12,6 +20,12 @@ window.store = new Vuex.Store({
       }
 
       state.standup.Categories.push(category);
+
+      if (category.Type === 'list') {
+        category.Entries.sort((a, b) => b.Votes - a.Votes);
+      } else if (category.Type === 'events') {
+        category.Entries.sort((a, b) => moment(a.Start).diff(b.Start));
+      }
     },
     add_entry(state, { categoryId, entry }) {
       const category = state.standup.Categories.find(c => c.ID === categoryId);
@@ -31,7 +45,11 @@ window.store = new Vuex.Store({
         category.Entries.push(entry);
       }
 
-      category.Entries.sort((a, b) => b.Votes - a.Votes);
+      if (category.Type === 'list') {
+        category.Entries.sort((a, b) => b.Votes - a.Votes);
+      } else if (category.Type === 'events') {
+        category.Entries.sort((a, b) => moment(a.Start).diff(b.Start));
+      }
     },
     delete_entry(state, { categoryId, entry }) {
       const category = state.standup.Categories.find(c => c.ID === categoryId);

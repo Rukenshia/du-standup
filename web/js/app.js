@@ -62,6 +62,12 @@ var app = new Vue({
           const entries = JSON.parse(body);
 
           category.Entries = entries;
+
+          if (category.Type === 'list') {
+            category.Entries.sort((a, b) => b.Votes - a.Votes);
+          } else if (category.Type === 'events') {
+            category.Entries.sort((a, b) => moment(a.Start).diff(b.Start));
+          }
         });
     },
     getStandup(c) {
