@@ -1,5 +1,5 @@
 Vue.component('category', {
-  props: ['id', 'name', 'entries', 'allowUpdates'],
+  props: ['id', 'name', 'entries'],
   data() {
     return {
       input: '',
@@ -8,15 +8,16 @@ Vue.component('category', {
   template: `
   <div class="category">
     <h1>{{ name }}</h1>
+
     <ul>
         <li v-for="entry in entries">{{ entry.Title }}
           (+{{entry.Votes}}
-          <button class="button-small button-black" v-if="allowUpdates" @click="voteEntry(entry)">+</button>)
-          <button class="button-small button-black" v-if="allowUpdates" @click="deleteEntry(entry)">x</button>
+          <button class="button-small button-black" @click="voteEntry(entry)">+</button>)
+          <button class="button-small button-black" @click="deleteEntry(entry)">x</button>
         </li>
     </ul>
 
-    <div class="row" v-if="allowUpdates">
+    <div class="row">
       <div class="column column-40">
         <input type="text" v-model="input" />
       </div>
