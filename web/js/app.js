@@ -4,6 +4,8 @@ var app = new Vue({
   data: {
     presentationMode: true,
     selectedCategory: null,
+
+    date: '0000-00-00',
   },
   mounted() {
     this.getStandup();
@@ -29,6 +31,11 @@ var app = new Vue({
     categories() {
       return this.$store.state.standup.Categories;
     }
+  },
+  watch: {
+    standup(s) {
+      this.date = moment(s.Expires).format('YYYY-MM-DD');
+    },
   },
   methods: {
     togglePresentationMode() {

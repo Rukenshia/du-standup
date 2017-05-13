@@ -32,6 +32,10 @@ Vue.component('category', {
       return `${window.baseURL}/api/categories/${this.id}/${endpoint}${entryId !== null ? '/' + entryId : ''}`;
     },
     addEntry() {
+      if (this.input.length === 0) {
+        return;
+      }
+
       http.post(this.generateUrl('entries'), JSON.stringify({
         Category: this.name,
         Title: this.input,
