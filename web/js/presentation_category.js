@@ -10,7 +10,7 @@ Vue.component('presentation-category', {
     <div v-if="entries.length === 0" class="category-empty">
       <p>nothing &#x1F389</p>
     </div>
-    <ul>
+    <ul class="category-entries">
         <li v-for="entry in entries">
             {{ entry.Title }}
         </li>
