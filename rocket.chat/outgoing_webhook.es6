@@ -3,7 +3,7 @@
 
 const service_url = '***REMOVED***';
 
-const reMsg = /@standup (add|remove) (.*?) (.*)/i;
+const reMsg = /@standup ((add|remove) )?(.*?) (.*)/i;
 
 const requestHandlers = {
   add(data) {
@@ -91,9 +91,9 @@ class Script {
     }
 
     const data = {
-      event: match[1],
-      category: match[2],
-      title: match[3],
+      event: (match[2] || 'add').toLowerCase(),
+      category: match[3],
+      title: match[4],
     };
 
     if (!data.category.endsWith('s')) {
