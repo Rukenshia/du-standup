@@ -138,3 +138,13 @@ func TestGetNextDailyOnSunday(t *testing.T) {
 	assert.Equal(t, 9, next.Hour())
 	assert.Equal(t, 20, next.Minute())
 }
+
+// TestIsStandupExpired checks whether it returns true when 'now' is past the Expiry date and
+// there is a new date available from getNextDaily
+func TestIsStandupExpired(t *testing.T) {
+	s := NewStandup()
+
+	now := s.Expires.Add(time.Hour)
+
+	assert.Equal(t, true, s.IsExpired(now))
+}
