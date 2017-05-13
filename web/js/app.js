@@ -10,6 +10,12 @@ var app = new Vue({
   mounted() {
     this.getStandup();
 
+    setInterval(() => {
+      this.categories.forEach(c => {
+        this.updateCategoryEntries(c);
+      });
+    }, 3000);
+
     document.addEventListener('keydown', e => {
       if (!this.presentationMode) {
         return;
@@ -44,6 +50,14 @@ var app = new Vue({
       if (this.presentationMode) {
         this.selectedCategory = this.categories[0];
       }
+    },
+    updateCategoryEntries(category) {
+      http.get(`${window.baseURL}/api/categories/${category.ID}/entries`)
+        .then(body => {
+          const entries = JSON.parse(body);
+
+          category.Entries = entries;
+        });
     },
     getStandup(c) {
       http.get(`${window.baseURL}/api/standup`)
