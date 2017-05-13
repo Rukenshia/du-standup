@@ -90,10 +90,15 @@ func (s *Standup) GetCategoryByName(name string) *Category {
 	return nil
 }
 
+// IsExpired returns whether the daily is already expired
+func (s *Standup) IsExpired(now time.Time) bool {
+	return s.Expires.Format("2006-01-02") != getNextDaily(now).Format("2006-01-02")
+}
+
 // StandupMiddleware to automatically regenerate the next Standup
 func StandupMiddleware(handler http.Handler) http.Handler {
 	mw := func(w http.ResponseWriter, r *http.Request) {
-		if standup.Expires.Format("2006-01-02") != getNextDaily(time.Now()).Format("2006-01-02") {
+		if standup.IsExpired(time.Now()) {
 			standup = NewStandup()
 
 			log.Printf("Generated new Standup for %s", standup.Expires.Format("2006-01-02"))
