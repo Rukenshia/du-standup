@@ -73,6 +73,16 @@ func (s *Standup) GetCategoryByID(id int) *Category {
 	return nil
 }
 
+// GetCategoryByName gets a Category by its name
+func (s *Standup) GetCategoryByName(name string) *Category {
+	for _, c := range s.Categories {
+		if c.Name == name {
+			return c
+		}
+	}
+	return nil
+}
+
 // StandupMiddleware to automatically regenerate the next Standup
 func StandupMiddleware(handler http.Handler) http.Handler {
 	mw := func(w http.ResponseWriter, r *http.Request) {
@@ -96,13 +106,21 @@ func apiGetCategories(w http.ResponseWriter, r *http.Request, p httprouter.Param
 }
 
 func apiGetCategory(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	var c *Category
 	id, err := strconv.Atoi(p.ByName("category"))
-	if err != nil {
-		w.WriteHeader(400)
-		return
+	if err == nil {
+		c = standup.GetCategoryByID(id)
+
+		// maybe the category name is a number
+		if c == nil {
+			c = standup.GetCategoryByName(p.ByName("category"))
+
+		}
+	} else {
+		// try to find it by name
+		c = standup.GetCategoryByName(p.ByName("category"))
 	}
 
-	c := standup.GetCategoryByID(id)
 	if c == nil {
 		w.WriteHeader(404)
 		return
