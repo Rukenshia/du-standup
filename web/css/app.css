@@ -8,6 +8,35 @@
   color: black;
 }
 
+#category-links {
+  /* to avoid scrolling stuff */
+  min-height: 10rem;
+}
+
+#category-links a {
+  transition: font-size .2s, color .2s;
+}
+
+#category-links .link-category.link-active-category {
+  font-size: 5rem;
+  color: #81CFE0;
+}
+
+#category-links .link-category {
+  font-size: 3rem;
+}
+
+.category-empty p {
+  position: absolute;
+  margin-top: 20%;
+
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+
+  font-size: 4rem;
+}
+
 .button-small {
   font-size: .8rem;
   height: 2.8rem;

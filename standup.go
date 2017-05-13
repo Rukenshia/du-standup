@@ -48,7 +48,11 @@ func NewStandup() Standup {
 	return Standup{
 		0,
 		getNextDaily(),
-		Categories{NewCategory(0, "needs")},
+		Categories{
+			NewCategory(0, "interests"),
+			NewCategory(1, "needs"),
+			NewCategory(2, "events"),
+		},
 	}
 }
 

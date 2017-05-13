@@ -13,6 +13,7 @@ var standup Standup
 func main() {
 	standup = NewStandup()
 
+	log.Println("adding routes")
 	router := httprouter.New()
 	router.GET("/api/standup", apiGetStandup)
 	router.GET("/api/categories", apiGetCategories)
@@ -26,6 +27,7 @@ func main() {
 
 	router.ServeFiles("/web/*filepath", http.Dir("web"))
 
+	log.Println("starting webserver")
 	log.Fatal(http.ListenAndServe(":8080", StandupMiddleware(router)))
 }
 
