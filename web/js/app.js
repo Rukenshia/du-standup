@@ -11,6 +11,11 @@ var app = new Vue({
     this.getStandup();
 
     setInterval(() => {
+      if (this.presentationMode) {
+        // only update current category to reduce load
+        this.updateCategoryEntries(this.selectedCategory);
+        return;
+      }
       this.categories.forEach(c => {
         this.updateCategoryEntries(c);
       });
@@ -69,6 +74,7 @@ var app = new Vue({
         });
     },
     viewCategory(c) {
+      this.updateCategoryEntries(c);
       this.selectedCategory = c;
     },
     nextCategory() {
