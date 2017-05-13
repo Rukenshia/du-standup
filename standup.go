@@ -18,16 +18,23 @@ type Standup struct {
 	Categories Categories
 }
 
-func getNextDaily() time.Time {
-	now := time.Now()
+// getNextDaily returns the expiry date of the next daily.
+// Monday: 9:20 UTC
+// Tue-Fri: 08:10 UTC
+// getNextDaily returns the next Monday if it is Friday after the current daily
+// we don't work on saturdays after all :)
+func getNextDaily(now time.Time) time.Time {
 
 	hour := 8
 	minute := 10
 
-	if (now.Weekday() == time.Friday && (now.Hour() > hour || now.Hour() == hour && now.Minute() >= minute)) || now.Weekday() == time.Saturday || now.Weekday() == time.Sunday {
+	if (now.Weekday() == time.Monday && (now.Hour() < 10 || now.Hour() == 9 && now.Minute() < 20)) ||
+		(now.Weekday() == time.Friday && (now.Hour() > hour || now.Hour() == hour && now.Minute() >= minute)) ||
+		now.Weekday() == time.Saturday ||
+		now.Weekday() == time.Sunday {
+
 		hour = 9
 		minute = 20
-
 	}
 
 	if now.Hour() > hour || now.Hour() == hour && now.Minute() >= minute {
@@ -47,7 +54,7 @@ func getNextDaily() time.Time {
 func NewStandup() Standup {
 	return Standup{
 		0,
-		getNextDaily(),
+		getNextDaily(time.Now()),
 		Categories{
 			NewCategory(0, "interests"),
 			NewCategory(1, "needs"),
@@ -86,7 +93,7 @@ func (s *Standup) GetCategoryByName(name string) *Category {
 // StandupMiddleware to automatically regenerate the next Standup
 func StandupMiddleware(handler http.Handler) http.Handler {
 	mw := func(w http.ResponseWriter, r *http.Request) {
-		if standup.Expires.Format("2006-01-02") != getNextDaily().Format("2006-01-02") {
+		if standup.Expires.Format("2006-01-02") != getNextDaily(time.Now()).Format("2006-01-02") {
 			standup = NewStandup()
 
 			log.Printf("Generated new Standup for %s", standup.Expires.Format("2006-01-02"))
