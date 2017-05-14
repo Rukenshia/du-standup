@@ -12,17 +12,13 @@ Vue.component('category', {
     <h1>{{ name }}</h1>
 
     <ul v-if="type === 'list'">
-        <li v-for="entry in entries">{{ entry.Title }}
-          (+{{entry.Votes}}
-          <button class="button-small button-black" @click="voteEntry(entry)">+</button>)
-          <button class="button-small button-black" @click="deleteEntry(entry)">x</button>
-        </li>
+      <template v-for="entry in entries">
+        <list-entry :title="entry.Title" :votes="entry.Votes" @vote="voteEntry(entry)" @delete="deleteEntry(entry)"></list-entry>
+      </template>
     </ul>
     <div v-if="type === 'events'">
       <div v-for="event in entries">
-        {{ event.Title }} starting at {{ event.Start }} in {{ event.Where }}
-          <button class="button-small button-black" @click="voteEntry(event)">vote</button>
-          <button class="button-small button-black" @click="deleteEntry(event)">x</button>
+        <event-entry :title="event.Title" :start="event.Start" :location="event.Where" @delete="deleteEntry(event)"></event-entry>
       </div>
     </div>
 
