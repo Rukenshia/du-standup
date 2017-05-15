@@ -86,3 +86,7 @@
   font-size: 12rem;
   color: rgba(0, 0, 0, 0.05);
 }
+
+blockquote.error {
+  border-left-color: rgb(239, 72, 54);
+}

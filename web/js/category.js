@@ -15,25 +15,15 @@ Vue.component('category', {
       <template v-for="entry in entries">
         <list-entry :title="entry.Title" :votes="entry.Votes" @vote="voteEntry(entry)" @delete="deleteEntry(entry)"></list-entry>
       </template>
+
+      <list-entry-editor @add="addEntry"></list-entry-editor>
     </ul>
     <div v-if="type === 'events'">
       <div v-for="event in entries">
         <event-entry :title="event.Title" :start="event.Start" :location="event.Where" @delete="deleteEntry(event)"></event-entry>
       </div>
-    </div>
 
-    <div class="row">
-      <div class="column column-40">
-        <input type="text" placeholder="Title" v-model="title" />
-
-        <div v-if="type === 'events'">
-          Starting Time <input type="time" placeholder="Start Time" v-model="start" />
-          <input type="text" placeholder="Where?" v-model="where" />
-        </div>
-      </div>
-      <div class="column">
-        <button class="button-black" @click="addEntry()">Add</button>
-      </div>
+      <event-entry-editor @add="addEntry"></event-entry-editor>
     </div>
   </div>`,
 
@@ -41,32 +31,8 @@ Vue.component('category', {
     generateUrl(endpoint, entryId = null) {
       return `${window.baseURL}/api/categories/${this.id}/${endpoint}${entryId !== null ? '/' + entryId : ''}`;
     },
-    addEntry() {
-      if (this.title.length === 0) {
-        return;
-      }
-
-      const postBody = {
-        Title: this.title,
-      };
-
-      if (this.type === 'events') {
-        if (this.start.length === 0 || this.where.length === 0) {
-          return;
-        }
-
-        // set start time
-        const timeSplit = this.start.split(':').map(x => parseInt(x, 10));
-        const start = moment(this.$store.state.standup.Expires).hours(timeSplit[0]).minutes(timeSplit[1]).toDate();
-
-
-        if (this.type === 'events') {
-          postBody.Start = start;
-          postBody.Where = this.where;
-        }
-      }
-
-      http.post(this.generateUrl('entries'), JSON.stringify(postBody)).then(body => {
+    addEntry(data) {
+      http.post(this.generateUrl('entries'), JSON.stringify(data)).then(body => {
         this.$store.commit('add_entry', { categoryId: this.id, entry: JSON.parse(body) });
       });
     },
