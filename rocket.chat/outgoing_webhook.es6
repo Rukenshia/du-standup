@@ -6,7 +6,7 @@ const base_url = '';
 const service_url = `${base_url}/api`;
 
 const reMsg = /@standup ((add|remove) )?(.*?) (.*)/i;
-const reEvent = /(.*?) at ([0-9]{1,2}:[0-9]{1,2}) in (.*)/i;
+const reEvent = /(.*?) at ([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{1,2}:[0-9]{1,2}) in (.*)/i;
 
 const requestHandlers = {
   add(data) {
@@ -118,19 +118,15 @@ class Script {
       if (!eventMatch) {
         return {
           message: {
-            text: `sorry, I didn't quite get that. For events, use this format: \`eventName at 12:34 in room name\``,
+            text: `sorry, I didn't quite get that. For events, use this format: \`event name at 2017-01-02 12:34 in room name\`. sorry for this weird format, it'll be changed soon.`,
           },
         };
       }
 
       data.title = eventMatch[1];
+      const parts = eventMatch[2].replace(' ', 'T');
 
-      const date = new Date();
-      const parts = eventMatch[2].split(':').map(x => parseInt(x, 10));
-      date.setHours(parts[0])
-      date.setMinutes(parts[1]);
-
-      data.start = date;
+      data.start = parts;
       data.where = eventMatch[3];
     }
 
