@@ -20,7 +20,7 @@ func TestGetNextDailyOnMonday(t *testing.T) {
 	next := getNextDaily(now)
 
 	assert.Equal(t, 2, next.Day())
-	assert.Equal(t, 9, next.Hour())
+	assert.Equal(t, 10, next.Hour())
 	assert.Equal(t, 20, next.Minute())
 }
 
@@ -37,7 +37,7 @@ func TestGetNextDailyOnLateMonday(t *testing.T) {
 	next := getNextDaily(now)
 
 	assert.Equal(t, 3, next.Day())
-	assert.Equal(t, 8, next.Hour())
+	assert.Equal(t, 9, next.Hour())
 	assert.Equal(t, 10, next.Minute())
 }
 
@@ -54,7 +54,7 @@ func TestGetNextDailyOnTuesday(t *testing.T) {
 	next := getNextDaily(now)
 
 	assert.Equal(t, 3, next.Day())
-	assert.Equal(t, 8, next.Hour())
+	assert.Equal(t, 9, next.Hour())
 	assert.Equal(t, 10, next.Minute())
 }
 
@@ -71,7 +71,7 @@ func TestGetNextDailyOnLateTuesday(t *testing.T) {
 	next := getNextDaily(now)
 
 	assert.Equal(t, 4, next.Day())
-	assert.Equal(t, 8, next.Hour())
+	assert.Equal(t, 9, next.Hour())
 	assert.Equal(t, 10, next.Minute())
 }
 
@@ -88,7 +88,7 @@ func TestGetNextDailyOnWednesday(t *testing.T) {
 	next := getNextDaily(now)
 
 	assert.Equal(t, 4, next.Day())
-	assert.Equal(t, 8, next.Hour())
+	assert.Equal(t, 9, next.Hour())
 	assert.Equal(t, 10, next.Minute())
 }
 
@@ -105,7 +105,7 @@ func TestGetNextDailyOnLateWednesday(t *testing.T) {
 	next := getNextDaily(now)
 
 	assert.Equal(t, 5, next.Day())
-	assert.Equal(t, 8, next.Hour())
+	assert.Equal(t, 9, next.Hour())
 	assert.Equal(t, 10, next.Minute())
 }
 
@@ -122,7 +122,7 @@ func TestGetNextDailyOnThursday(t *testing.T) {
 	next := getNextDaily(now)
 
 	assert.Equal(t, 5, next.Day())
-	assert.Equal(t, 8, next.Hour())
+	assert.Equal(t, 9, next.Hour())
 	assert.Equal(t, 10, next.Minute())
 }
 
@@ -139,7 +139,7 @@ func TestGetNextDailyOnLateThursday(t *testing.T) {
 	next := getNextDaily(now)
 
 	assert.Equal(t, 6, next.Day())
-	assert.Equal(t, 8, next.Hour())
+	assert.Equal(t, 9, next.Hour())
 	assert.Equal(t, 10, next.Minute())
 }
 
@@ -150,7 +150,7 @@ func TestGetNextDailyOnFriday(t *testing.T) {
 	next := getNextDaily(now)
 
 	assert.Equal(t, 6, next.Day())
-	assert.Equal(t, 8, next.Hour())
+	assert.Equal(t, 9, next.Hour())
 	assert.Equal(t, 10, next.Minute())
 }
 
@@ -167,7 +167,7 @@ func TestGetNextDailyOnLateFriday(t *testing.T) {
 	next := getNextDaily(now)
 
 	assert.Equal(t, 9, next.Day())
-	assert.Equal(t, 9, next.Hour())
+	assert.Equal(t, 10, next.Hour())
 	assert.Equal(t, 20, next.Minute())
 }
 
@@ -184,7 +184,7 @@ func TestGetNextDailyOnSaturday(t *testing.T) {
 	next := getNextDaily(now)
 
 	assert.Equal(t, 9, next.Day())
-	assert.Equal(t, 9, next.Hour())
+	assert.Equal(t, 10, next.Hour())
 	assert.Equal(t, 20, next.Minute())
 }
 
@@ -201,7 +201,7 @@ func TestGetNextDailyOnSunday(t *testing.T) {
 	next := getNextDaily(now)
 
 	assert.Equal(t, 9, next.Day())
-	assert.Equal(t, 9, next.Hour())
+	assert.Equal(t, 10, next.Hour())
 	assert.Equal(t, 20, next.Minute())
 }
 

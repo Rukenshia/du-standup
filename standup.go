@@ -25,7 +25,7 @@ type Standup struct {
 // we don't work on saturdays after all :)
 func getNextDaily(now time.Time) time.Time {
 
-	hour := 8
+	hour := 9
 	minute := 10
 
 	if (now.Weekday() == time.Monday && (now.Hour() < 10 || now.Hour() == 9 && now.Minute() < 20)) ||
@@ -33,7 +33,7 @@ func getNextDaily(now time.Time) time.Time {
 		now.Weekday() == time.Saturday ||
 		now.Weekday() == time.Sunday {
 
-		hour = 9
+		hour = 10
 		minute = 20
 	}
 

@@ -21,6 +21,8 @@ func main() {
 
 	standup = NewStandup()
 
+	log.Printf("next standup expires at %v", standup.Expires)
+
 	log.Println("adding routes")
 	router := httprouter.New()
 	router.GET("/api/standup", apiGetStandup)
