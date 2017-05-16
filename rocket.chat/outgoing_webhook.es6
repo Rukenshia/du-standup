@@ -39,7 +39,7 @@ const responseHandlers = {
     } else if (response.status_code === 404) {
       return {
         content: {
-          text: 'sorry, this category doesn\'t exist :sweat_smile:. try using one of `need`, `interest` or `event` :blush:',
+          text: 'sorry, this category doesn\'t seem to exist :sweat_smile:. try using one of `visitor`, `need`, `interest`, `pain` or `event` :smile:',
           parseLinks: true,
         }
       }

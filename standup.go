@@ -56,9 +56,11 @@ func NewStandup() Standup {
 		0,
 		getNextDaily(time.Now()),
 		Categories{
-			NewCategory(0, "interests", "list"),
-			NewCategory(1, "needs", "list"),
-			NewCategory(2, "events", "events"),
+			NewCategory(0, "visitors", "list"),
+			NewCategory(1, "interests", "list"),
+			NewCategory(2, "needs", "list"),
+			NewCategory(3, "pains", "list"),
+			NewCategory(4, "events", "events"),
 		},
 	}
 }
