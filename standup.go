@@ -47,14 +47,14 @@ func getNextDaily(now time.Time) time.Time {
 		}
 	}
 
-	return time.Date(now.Year(), now.Month(), now.Day(), hour, minute, 0, 0, time.UTC)
+	return time.Date(now.Year(), now.Month(), now.Day(), hour, minute, 0, 0, timezone)
 }
 
 // NewStandup creates a new Standup with the next available Date
 func NewStandup() Standup {
 	return Standup{
 		0,
-		getNextDaily(time.Now()),
+		getNextDaily(time.Now().In(timezone)),
 		Categories{
 			NewCategory(0, "visitors", "list"),
 			NewCategory(1, "interests", "list"),
@@ -94,7 +94,7 @@ func (s *Standup) GetCategoryByName(name string) *Category {
 
 // IsExpired returns whether the daily is already expired
 func (s *Standup) IsExpired(now time.Time) bool {
-	return s.Expires.Format("2006-01-02") != getNextDaily(now).Format("2006-01-02")
+	return s.Expires.Format("2006-01-02") != getNextDaily(now.In(timezone)).Format("2006-01-02")
 }
 
 // StandupMiddleware to automatically regenerate the next Standup

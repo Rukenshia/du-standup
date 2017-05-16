@@ -107,3 +107,11 @@ input[type='time'] {
   padding: .6rem 1.0rem;
   width: 100%;
 }
+
+.event-title.small {
+  font-size: 60%;
+}
+
+.event-title.xsmall {
+  font-size: 40%;
+}

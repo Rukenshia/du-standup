@@ -18,7 +18,7 @@ Vue.component('event-entry-editor', {
       <div class="row">
         <div class="column column-40">
           <input type="text" placeholder="Title" v-model="title" />
-          Starting Time <input type="time" placeholder="Start Time" v-model="start" />
+          Starting Time <input type="datetime-local" placeholder="Start Time" v-model="start" />
           <input type="text" placeholder="Where?" v-model="where" />
         </div>
         <div class="column">
@@ -26,7 +26,14 @@ Vue.component('event-entry-editor', {
         </div>
       </div>
     </div>`,
-
+  computed: {
+    standupDate() {
+      return moment(this.$store.state.standup.Expires);
+    }
+  },
+  mounted() {
+    this.start = this.standupDate.format("YYYY-MM-DDTHH:mm");
+  },
   methods: {
     add() {
       if (this.title.length === 0 || this.start.length === 0 || this.where.length === 0) {
@@ -35,12 +42,9 @@ Vue.component('event-entry-editor', {
       }
       this.invalid = false;
 
-      const timeSplit = this.start.split(':').map(x => parseInt(x, 10));
-      const start = moment(this.$store.state.standup.Expires).hours(timeSplit[0]).minutes(timeSplit[1]).toDate();
-
       this.$emit('add', {
         Title: this.title,
-        Start: start,
+        Start: this.start,
         Where: this.where,
       })
     }

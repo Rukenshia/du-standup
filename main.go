@@ -6,11 +6,19 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 )
 
 var standup Standup
+var timezone *time.Location
 
 func main() {
+	loc, err := time.LoadLocation("Europe/Berlin")
+	if err != nil {
+		log.Fatal(err)
+	}
+	timezone = loc
+
 	standup = NewStandup()
 
 	log.Println("adding routes")

@@ -163,13 +163,29 @@ func apiCreateEntry(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 
 		entry = le
 	} else if c.Type == "events" {
-		var ee *EventEntry
-		if err := getJSON(r, &ee); err != nil {
+		var te *struct {
+			Title string
+			Start string
+			Where string
+		}
+		if err := getJSON(r, &te); err != nil {
 			w.WriteHeader(400)
 			return
 		}
 
-		entry = ee
+		start, err := time.ParseInLocation("2006-01-02T15:04", te.Start, timezone)
+		if err != nil {
+			w.WriteHeader(400)
+			w.Write([]byte("Invalid date Format. Required is 2006-01-02T15:04"))
+			return
+		}
+
+		var ee EventEntry
+		ee.Title = te.Title
+		ee.Where = te.Where
+		ee.Start = start.In(time.UTC)
+
+		entry = &ee
 	}
 
 	if entry == nil {
