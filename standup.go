@@ -101,7 +101,28 @@ func (s *Standup) IsExpired(now time.Time) bool {
 func StandupMiddleware(handler http.Handler) http.Handler {
 	mw := func(w http.ResponseWriter, r *http.Request) {
 		if standup.IsExpired(time.Now()) {
+			// save events that are not expiring on this day
+			var events []Entry
+
+			if c := standup.GetCategoryByName("events"); c != nil {
+				for _, entry := range c.Entries {
+					event, ok := entry.(*EventEntry)
+					if !ok {
+						continue
+					}
+
+					if event.Start.Day() != standup.Expires.Day() {
+						events = append(events, entry)
+					}
+				}
+			}
+
 			standup = NewStandup()
+
+			if c := standup.GetCategoryByName("events"); c != nil {
+				// and append them again. yay.
+				c.Entries = append(c.Entries, events...)
+			}
 
 			log.Printf("Generated new Standup for %s", standup.Expires.Format("2006-01-02"))
 		}
