@@ -17,7 +17,7 @@ Vue.component('event-presentation', {
           <small>{{ event.Where }}</small>
         </div>
       </div>
-      <hr v-if="later.length > 0" />
+      <hr v-if="later.length > 0 && today.length > 0" />
       <div v-for="event in later" class="row">
         <div class="column column-10">
           <small>{{ moment(event.Start).format('DD.MM') }}</small>
